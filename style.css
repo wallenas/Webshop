@@ -1,0 +1,116 @@
+* {
+    font-family: 'Roboto', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+
+}
+
+#app {
+    display: grid;
+    grid-template-columns:2vw auto auto 2vw;
+    grid-template-rows: auto
+                        50px
+                        auto
+                        5vw;
+    grid-template-areas: "left hd hd right"
+                         "left nav nav right"
+                         "left main main right"
+                         "left foot foot right";
+}
+
+header {
+    grid-area: hd;
+    height: 200px;
+    text-align: center;
+    padding: 20px;
+}
+
+.titleContainer h2 {
+    font-size: 48px;
+    margin-bottom: 25px;
+}
+
+h3 {
+    font-weight: 400;
+}
+
+nav {
+    grid-area: nav;
+    display: flex;
+    margin: auto 0;
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+}
+
+/* .vuenav {
+    display: flex;
+    margin: auto 0;
+    border-bottom: 2px solid black;
+    border-top: 2px solid black;
+} */
+nav li {
+    margin: auto;
+    text-align: center;
+    list-style: none;
+    cursor: pointer;
+}
+
+main {
+    grid-area: main;
+}
+
+.deals h2 {
+    text-align: center;
+    margin: 20px auto;
+}
+
+.dealsContainer {
+    display: flex;
+    margin: auto 0;
+}
+
+.imgContainer {
+    overflow: hidden;
+    border: 1px solid black;
+    width: 280px;
+    height: 200px;
+    
+}
+
+.imgContainer img {
+    width: 280px;
+    height: 200px;
+    margin: auto;
+}
+
+.deal {
+    margin: auto;
+    text-align: center;
+}
+
+.bold {
+    font-weight: bold;
+}
+
+.flex {
+    /* border: 1px solid red; */
+    display: flex;
+    margin: auto;
+    
+}
+
+.flex p {
+    margin: auto;
+    margin-right: 5px;
+}
+
+.dealInputs {
+    margin-right: 50px;
+    text-align:center;
+}
+
+.about {
+    text-align: center;
+    margin-top: 50px;
+}
