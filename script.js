@@ -1,78 +1,24 @@
 let products = [];
-let selectedProduct = {};
+let cart = [];
 
+window.onload = async function () {
+    await fetchProducts();
+    app.products = products;
+}
 
 
 async function fetchProducts() {
     await axios.get('/products/products.json')
         .then(response => {
             products = response.data;
-            console.log(products);
         })
         .catch(error => {
             console.log("Något gick fel: " + error)
+        })
+        .finally(() => {
+            app.loading = false;
         });
 }
-
-function closeModal() {
-    modal.style.display = "none";
-    app.selectedProduct = {};
-    console.log(selectedProduct);
-    console.log("borde vara undefined typ ^")
-}
-
-window.onclick = function (event) {
-    let modal = document.getElementById('myModal');
-    if (event == modal) {
-        modal.style.display = "none";
-    }
-}
-
-window.onload = async function () {
-    await fetchProducts();
-
-    var app = new Vue({
-        el: "#app",
-        data: {
-            currentPage: "home",
-            products: Array,
-            selectedProduct: Object,
-            productId: ""//istället för hela objektet
-
-        },
-        created: async function () {
-            this.products = products;
-        },
-
-        methods: {
-            changePage: function (pageName) {
-                if (this.currentPage != pageName)
-                    this.currentPage = pageName;
-            }
-        }
-    })
-}
-
-// function popProduct(productId) {
-//     modal = document.getElementById("myModal");
-//     modal.style.display = "block";
-
-//     selectedProduct = products.find(p => p.ID === productId)
-//     console.log("selected product: ")
-//     console.log(selectedProduct);
-
-//     modal = document.getElementById("myModal");
-//     modal.style.display = "block";
-
-//     this.selectedItem = products.find(p => p.ID === productId)
-//     console.log("selected product: ")
-//     console.log(this.selectedItem);
-
-// }
-
-
-
-
 
 
 
@@ -82,6 +28,9 @@ Vue.component('vueheader', {
             title: "wallenas clothing company",
             description: "basic clothing and fair pricing"
         }
+    },
+    created: function () {
+        console.log("header skapad");
     },
     template: '<div>' +
         '<div class="titleContainer">' +
@@ -110,7 +59,6 @@ Vue.component('about', {
                 "quibusdam sed amet tempora."
         }
     },
-
     template: '<div class="about">' +
         '<h2>{{title}}</h2>' +
         '<h3 class="thin">{{subheader}}</h3>' +
@@ -126,20 +74,19 @@ Vue.component('deals', {
     },
     methods: {
         getFirstPageProducts: function () {
-            // TODO: detta condition fungerar ej
-            if (this.products == null) {
-                console.log("Produkter har inte laddats");
-                console.log(this.products)
+            if (!products.length) {
+                console.log("Produkter har inte laddats (deals)");
                 return;
             }
 
             // Get all products that has ShowOnFirstPage == true and is in stock
             this.firstPageProducts = products.filter(p => p.ShowOnFirstPage && p.InStock > 0);
             // TODO: Randomize three products from an array that holds all first page items
+
+            console.log(this.firstPageProducts);
         }
     },
-    created: async function () {
-        this.products = products;
+    created: function () {
         this.getFirstPageProducts();
     },
 
@@ -149,7 +96,42 @@ Vue.component('deals', {
         '</div>' +
         '<div class="dealsContainer">' +
         '<div class="deal" v-for="product in firstPageProducts" >' +
-        '<div class="imgContainer" @click="productPopping.modal(product.ID)">' +
+        '<div class="imgContainer" @click="app.showProduct(product.ID)" >' +
+        '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
+        '</div>' +
+        '<p class="bold">{{product.Title}}, {{product.Price}}:-</p>' +
+        '<button class="cart-button" @click="app.addToCart(product.ID)">add to cart</button>' +
+        '</div></div></div></div>'
+})
+
+Vue.component('popped-product', {
+    data: function () {
+        return {
+            product: products.find(p => p.ID == app.productId),
+        }
+    },
+    template: '<div id="modalBox" class="modal" style="display: block;">' +
+        '<div class="modal-content">' +
+        '<span class="close" onclick="app.closeModal()">&times;</span>' +
+        '<p>{{product.Title}}</p>' +
+        '<p>{{product.Price}}</p>' +
+        '<p>{{product.Description}}</p>' +
+        '</div></div>'
+})
+
+
+
+Vue.component('product-category', {
+    data: function () {
+        return {
+            productsInCategory: products.filter(p => p.Category == app.currentPage)
+        }
+    },
+
+    template: '<div>' +
+        '<div class="dealsContainer">' +
+        '<div class="deal" v-for="product in productsInCategory">' +
+        '<div class="imgContainer" @click="app.showProduct(product.ID)" >' +
         '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
         '</div>' +
         '<p class="bold">{{product.Title}}, {{product.Price}}:-</p>' +
@@ -158,53 +140,59 @@ Vue.component('deals', {
         '<div class="dealInputs">' +
         '<input type="number" min="1" v-bind:max="product.InStock" value="1">' +
         '<button class="cart-button">OK</button>' +
-        '</div></div></div></div></div>'
+        '</div></div></div></div>'
 })
 
-
-Vue.component('popped-product', {
-    data: function () {
-        return {
-            product: {}
-        }
-    },
-    methods: {
-        updateProduct: function () {
-            if (app.selectedProduct){
-                this.product = app.selectedProduct;
-                console.log(this.product);
-            }
-        }
-    }
-})
-
-
-var productPopping = new Vue({
+var app = new Vue({
+    el: "#app",
     data: {
-        selectedItem: {}
+        currentPage: "HOME", //sets starting page
+        products: Array,
+        isProductSelected: false,
+        productId: "", //istället för hela objektet
+        loading: true,
+        cart: []
+
     },
     methods: {
-        modal: function (productId) {
-            modal = document.getElementById("myModal");
-            modal.style.display = "block";
-
-            this.selectedItem = products.find(p => p.ID === productId)
-            console.log("selected product: ")
-            console.log(this.selectedItem);
-
-            this.render();
+        changePage: function (pageName) {
+            if (this.currentPage != pageName) {
+                this.currentPage = pageName;
+            }
         },
-        render: function () {
-            var content = document.getElementsByClassName("modal-content")[0];
+        showProduct: function (productId) {
+            this.productId = productId;
+            this.isProductSelected = true;
+        },
+        closeModal: function () {
+            let div = document.getElementById('modalBox');
+            div.style.display = "none";
+            this.isProductSelected = false;
+            this.productId = "";
+        },
+        addToCart: function (productId) {
+            let product = products.find(p => p.ID == productId);
 
-            content.innerHTML = `<span class="close" onclick="closeModal()">&times;</span>` +
-                '<div id="productContainer">' +
-                `<h1>${this.selectedItem.Title}</h1>` +
-                `<p><strong>${this.selectedItem.Description}</strong></p>` +
-                `<p>${this.selectedItem.Price}:-</p>` +
-                `<p>${this.selectedItem.InStock} antal i lager</p>` +
-                '<p>Hej hej</p>' +
-                '</div>'
+            let indexOfObj = cart.findIndex((p => p.product.ID == productId));
+            
+            // if product is not in the cart (index returns -1), then add to cart
+            if (indexOfObj === -1) {
+                cart.push({ product: product, quantity: + 1 })
+                console.log("Object not found in cart and pushed successfully. Current index of object: ");
+                console.log(cart.findIndex((p => p.product.ID === productId)));
+
+                this.updateCart();
+                return;
+            }
+            // if product already is in cart, add +1 to its quantity
+            cart[indexOfObj].quantity += 1;
+            console.log(cart[indexOfObj])
+
+            console.log(cart);
+            this.updateCart();
+        },
+        updateCart: function () {
+            this.cart = cart;
         }
     }
 })

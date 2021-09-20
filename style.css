@@ -18,6 +18,8 @@ main {
     overflow: scroll;
 }
 */
+
+
 #app {
     display: grid;
     grid-template-columns:2vw auto auto 2vw;
@@ -30,6 +32,7 @@ main {
                          "left main main right"
                          "left foot foot right";
 }
+
 
 header {
     grid-area: hd;
@@ -63,12 +66,6 @@ nav {
     border-top: 2px solid black;
 }
 
-/* .vuenav {
-    display: flex;
-    margin: auto 0;
-    border-bottom: 2px solid black;
-    border-top: 2px solid black;
-} */
 nav li {
     margin: 5px auto;
     text-align: center;

@@ -21,48 +21,40 @@
         </header>
 
         <nav>
-            <li @click="changePage('home');">home</li>
-            <li @click="changePage('t-shirts')">t-shirts</li>
-            <li @click="changePage('pants')">pants</li>
-            <li @click="changePage('underwear')">underwear</li>
+            <li @click="changePage('HOME');">home</li>
+            <li @click="changePage('TSHIRT')">t-shirts</li>
+            <li @click="changePage('PANTS')">pants</li>
+            <li @click="changePage('UNDERWEAR')">underwear</li>
+            <li @click="changePage('CART')" v-if="cart.length">cart</li>
         </nav>
 
-        <main id="main">
-            <div v-if="currentPage === 'home'">
-                <!-- Show three selected items -->
-                <deals></deals>
+        <main id="main" v-if="!loading">
+                <div v-if="currentPage === 'HOME'">
+                    <!-- Show three selected items -->
+                    <deals></deals>
 
-                <div class="modal" v-if="selectedProduct">
-                    <p>produkt är vald</p>
-                </div>
-
-
-
-                <div class="modal"></div>
-                <div id="myModal" class="modal">
-                    <!-- Modal content -->
-                    <div class="modal-content">
-                        <!-- <span class="close" onclick="closeModal()">&times;</span> -->
+                    <div v-if="isProductSelected">
+                        <popped-product></popped-product>
                     </div>
 
+                    <article>
+                        <about></about>
+                    </article>
                 </div>
-                <article>
-                    <about></about>
-                </article>
-            </div>
 
+                <div v-if="currentPage === 'CART'">
+                    <li v-for="object in cart">{{object.product.Title}}, {{object.quantity}}st, Total: {{object.product.Price * object.quantity}}:- </li>
 
-            <div v-if="currentPage === 't-shirts'">
-                <p>t-shirts</p>
-            </div>
+                </div>
 
-            <div v-if="currentPage === 'pants'">
-                <p>pants</p>
-            </div>
+                <div v-else :key="currentPage">
+                    <product-category></product-category>
 
-            <div v-if="currentPage === 'underwear'">
-                <p>underwear</p>
-            </div>
+                    <div v-if="isProductSelected">
+                        <popped-product></popped-product>
+                    </div>
+                </div>
+            
         </main>
         <aside>
             <!-- Put cart here? -->
