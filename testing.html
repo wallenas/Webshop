@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <button @click="getProducts()">Hämta produkter</button>
+
+        <div v-if="products.length > 0" v-for="product in products">
+            <li v-for="product in products">{{product.Title}}</li>
+        </div>
+
+
+    </div>
+    <script>
+        // let products = [];
+        let productId = "";
+
+        Vue.component('deals', {
+    data: function () {
+        return {
+            firstPageProducts: [],
+            products: []
+        }
+    },
+
+    methods: {
+        getFirstPageProducts: function () {
+            // TODO: detta condition fungerar ej
+            if (this.products == null) {
+                console.log("Produkter har inte laddats");
+                console.log(this.products)
+                return;
+            }
+
+
+            // Get all products that has ShowOnFirstPage == true and is in stock
+            this.firstPageProducts = products.filter(p => p.ShowOnFirstPage && p.InStock > 0);
+
+            let allTshirts = products.filter(p => p.Category == "TSHIRTS");
+            // TODO: Randomize three products from an array that holds all first page items
+        }
+    },
+    created: async function () {
+        this.getFirstPageProducts();
+    },
+
+    template: '<div class="deals">' +
+        '<div>' +
+        '<h2>deals of the week</h2>' +
+        '</div>' +
+        '<div class="dealsContainer">' +
+        '<div class="deal" v-for="product in firstPageProducts" >' +
+        '<div class="imgContainer" @click="productPopping.modal(product.ID)">' +
+        '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
+        '</div>' +
+        '<p class="bold">{{product.Title}}, {{product.Price}}:-</p>' +
+        '<div class="flex">' +
+        '<p class="thin">Add to cart:</p>' +
+        '<div class="dealInputs">' +
+        '<input type="number" min="1" v-bind:max="product.InStock" value="1">' +
+        '<button class="cart-button">OK</button>' +
+        '</div></div></div></div></div>'
+})
+
+        var app = new Vue({
+            el: "#app",
+            data: {
+                products: []
+            },
+
+            methods: {
+                getProducts: function () {
+                    axios.get('/products/products.json')
+                        .then(response => {
+                            this.products = response.data;
+                            console.log(products);
+                        })
+                }
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>

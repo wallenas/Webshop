@@ -1,40 +1,42 @@
-{
-	"tshirts": [
-		{
-			"ID": "fbeed08e-0b37-47d6-ba54-66c3ba150c23",
-			"Title": "IT IS WHAT IT IS, t-shirt",
-			"Price": 299.9,
-			"Description": "Our plain white t-shirt is made from 100% organically grown cotton produced from our Stockholm terrarium. This loose fit t-shirt feels like heaven to wear, and its message is simple but clear -To accept and enjoy the present.",
-			"Img": "https://cdn.shopify.com/s/files/1/0049/3984/1625/products/unisex-organic-cotton-t-shirt-white-front-60d7624b8b8f9_2048x2048.jpg?v=1624728143",
-			"ShowOnFirstPage": true
-		},
-		{
-			"ID": "2385009a-e3d6-43c3-9c1a-970344ea6934",
-			"Title": "PLAIN WHITE TEE",
-			"Price": 99.9,
-			"Description": "It's a basic shirt for basic people (like our owner)! What else do you need?",
-			"Img": "https://media.vogue.co.uk/photos/5e9837a95cb7540008ab975f/master/w_2580%2Cc_limit/White%2520T%2520Cos%2520Sarah%2520.jpg",
-			"ShowOnFirstPage": true
-		}
-	],
-	"underwear": [
-		{
-			"ID": "1e82079a-d52b-44e5-8565-74d116c3892c",
-			"Title": "Kalsong",
-			"Price": 59.5,
-			"Description": "Fina kalsonger",
-			"Img": "imgsrc.jpg",
-			"ShowOnFirstPage": true
-		}
-	],
-	"pants": [
-		{
-			"ID": "6b6efac1-be52-4e0c-9191-9ff85eb96f2b",
-			"Title": "THE WORKING MAN JEANS",
-			"Price": 499.9,
-			"Description": "Are you looking for the perfect pair of jeans? Suitable for both work and recreational activites? Look no further!",
-			"Img": "",
-			"ShowOnFirstPage": false
-		}
-	]
-}
+[
+  {
+    "ID": "3f9f13bf-e48c-47df-912d-47249392a760",
+    "Category": "TSHIRT",
+    "Title": "IT IS WHAT IT IS",
+    "Price": 299.9,
+    "Description": "Our plain white t-shirt is made from 100% organically grown cotton produced from our Stockholm terrarium. This loose fit t-shirt feels like heaven to wear, and its message is simple but clear -To accept and enjoy the present.",
+    "Img": "https://cdn.shopify.com/s/files/1/0049/3984/1625/products/unisex-organic-cotton-t-shirt-white-front-60d7624b8b8f9_2048x2048.jpg?v=1624728143",
+    "ShowOnFirstPage": true,
+    "InStock": 4
+  },
+  {
+    "ID": "6f979183-24ae-427a-ba4e-750d7f8fd99d",
+    "Category": "TSHIRT",
+    "Title": "PLAIN WHITE TEE",
+    "Price": 99.9,
+    "Description": "It\u0027s a basic shirt for basic people (like our owner)! What else do you need?",
+    "Img": "https://media.vogue.co.uk/photos/5e9837a95cb7540008ab975f/master/w_2580%2Cc_limit/White%2520T%2520Cos%2520Sarah%2520.jpg",
+    "ShowOnFirstPage": true,
+    "InStock": 10
+  },
+  {
+    "ID": "eb159364-4b43-49bd-86b2-530ac2fe5430",
+    "Category": "UNDERWEAR",
+    "Title": "Kalsong",
+    "Price": 59.5,
+    "Description": "Fina kalsonger",
+    "Img": "https://www.icaniwill.se/bilder/artiklar/zoom/10141-001_1.jpg?m=1580482739",
+    "ShowOnFirstPage": true,
+    "InStock": 2
+  },
+  {
+    "ID": "89cdb4fe-568e-40b4-b209-affd471596af",
+    "Category": "PANTS",
+    "Title": "THE WORKING MAN JEANS",
+    "Price": 499.9,
+    "Description": "Are you looking for the perfect pair of jeans? Suitable for both work and recreational activites? Look no further!",
+    "Img": "",
+    "ShowOnFirstPage": false,
+    "InStock": 15
+  }
+]

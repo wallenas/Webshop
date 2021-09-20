@@ -29,9 +29,23 @@
 
         <main id="main">
             <div v-if="currentPage === 'home'">
-                
+                <!-- Show three selected items -->
                 <deals></deals>
 
+                <div class="modal" v-if="selectedProduct">
+                    <p>produkt är vald</p>
+                </div>
+
+
+
+                <div class="modal"></div>
+                <div id="myModal" class="modal">
+                    <!-- Modal content -->
+                    <div class="modal-content">
+                        <!-- <span class="close" onclick="closeModal()">&times;</span> -->
+                    </div>
+
+                </div>
                 <article>
                     <about></about>
                 </article>
@@ -40,40 +54,10 @@
 
             <div v-if="currentPage === 't-shirts'">
                 <p>t-shirts</p>
-                <div class="dealsContainer">
-                    <div class="deal" v-for="product in products.tshirts">
-                        <div class="imgContainer">
-                            <img v-bind:src="product.Img" v-bind:alt="product.Title">
-                        </div>
-                        <p class="bold">{{product.Title}} -- {{product.Price}}:-</p>
-                        <div class="flex">
-                            <p class="thin">Add to cart:</p>
-                            <div class="dealInputs">
-                                <input type="number" min="1" max="5" value="1">
-                                <button class="cart-button">OK</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div v-if="currentPage === 'pants'">
                 <p>pants</p>
-                <div class="dealsContainer">
-                    <div class="deal" v-for="product in products.pants">
-                        <div class="imgContainer">
-                            <img v-bind:src="product.Img" v-bind:alt="product.Title">
-                        </div>
-                        <p class="bold">{{product.Title}} -- {{product.Price}}:-</p>
-                        <div class="flex">
-                            <p class="thin">Add to cart:</p>
-                            <div class="dealInputs">
-                                <input type="number" min="1" max="5" value="1">
-                                <button class="cart-button">OK</button>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
 
             <div v-if="currentPage === 'underwear'">
@@ -84,140 +68,11 @@
             <!-- Put cart here? -->
         </aside>
         <footer>
-
+            <h2>Footer stuff</h2>
         </footer>
 
     </div>
-    <script>
-
-        var products = [];
-
-        Vue.component('about', {
-            data: function () {
-                return {
-                    title: "about us",
-                    subheader: ".quality | .simplicity | .sustainability",
-                    description: "We care about you. You need to look your best. Bla bla bla lorem ipsum yeah"
-                }
-            },
-
-            template: '<div class="about">' +
-                '<h2>{{title}}</h2>' +
-                '<h3 class="thin">{{subheader}}</h3>' +
-                '<p>{{description}}</p>' +
-                '</div>'
-        })
-
-        Vue.component('deals', {
-            data: function () {
-                return {
-                    products: [],
-                    firstPageProducts: []
-                }
-            },
-            methods: {
-                fetchData2: async function () {
-                    await axios.get('/products/products.json')
-                        .then(response => {
-                            this.products = response.data;
-                        })
-                        .catch(error => {
-                            console.log("Något gick fel: " + error)
-                        });
-                },
-                // Försökte få till en smidigare funktion med hjälp av .filter(), tyvärr fungerade inte det.
-                getFirstPageProducts: function () {
-                    // TODO: detta condition fungerar ej
-                    if (this.products == null) {
-                        console.log("Produkter har inte laddats");
-                        console.log(this.products)
-                        return;
-                    }
-
-
-                    let allCategories = [this.products.tshirts, this.products.underwear, this.products.pants];
-                    let firstPageTrue = [];
-                    allCategories.forEach(category => {
-                        category.forEach(product => {
-                            if (product.ShowOnFirstPage == true) {
-                                firstPageTrue.push(product);
-                            }
-                        })
-                    })
-                    this.firstPageProducts = firstPageTrue;
-                    console.log(this.firstPageProducts);
-                }
-            },
-            created: async function () {
-                this.products = app.products;
-                // await this.fetchData2();
-                // this.getFirstPageProducts();
-            },
-
-            template: '<div class="deals">' +
-                '<div>' +
-                '<h2>deals of the week</h2>' +
-                '</div>' +
-                '<div class="dealsContainer">' +
-                '<div class="deal" v-for="product in firstPageProducts">' +
-                '<div class="imgContainer">' +
-                '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
-                '</div>' +
-                '<p class="bold">{{product.Title}} -- {{product.Price}}:-</p>' +
-                '<div class="flex">' +
-                '<p class="thin">Add to cart:</p>' +
-                '<div class="dealInputs">' +
-                '<input type="number" min="1" max="5" value="1">' +
-                '<button class="cart-button">OK</button>' +
-                '</div></div></div></div></div>'
-
-        })
-
-        Vue.component('vueheader', {
-            data: function () {
-                return {
-                    title: "wallenas clothing company",
-                    description: "basic clothing and fair pricing"
-                }
-            },
-            template: '<div>' +
-                '<div class="titleContainer">' +
-                '<h2>{{title}}</h2>' +
-                '<h3>{{description}}</h3>' +
-                '</div>' +
-                '</div>'
-        });
-
-
-        var app = new Vue({
-            el: "#app",
-            data: {
-                currentPage: "home",
-                products: []
-
-            },
-            created: async function () {
-                await this.fetchProducts();
-                this.products = products;
-            },
-
-            methods: {
-                changePage: function (pageName) {
-                    if (this.currentPage != pageName)
-                        this.currentPage = pageName;
-                },
-                fetchProducts: async function () {
-                    await axios.get('/products/products.json')
-                        .then(response => {
-                            products = response.data;
-                        })
-                        .catch(error => {
-                            console.log("Något gick fel: " + error)
-                        });
-                }
-            }
-        })
-    </script>
+    <script src="script.js"></script>
 </body>
 
 </html>

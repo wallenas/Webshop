@@ -6,13 +6,25 @@
 
 }
 
+/* TODO: kolla in coolors.co för färgschema och cssgradient.io (för snygga bakgrunder) */
+
+/* TODO: Ett alternativ för att låsa header/footer */
+/*
+body {
+    overflow: hidden;
+}
+
+main {
+    overflow: scroll;
+}
+*/
 #app {
     display: grid;
     grid-template-columns:2vw auto auto 2vw;
     grid-template-rows: auto
                         50px
                         auto
-                        5vw;
+                        1vh;
     grid-template-areas: "left hd hd right"
                          "left nav nav right"
                          "left main main right"
@@ -24,6 +36,14 @@ header {
     height: 200px;
     text-align: center;
     padding: 20px;
+}
+
+footer {
+    grid-area: foot;
+    border: 2px solid black;
+    height: 100px;
+    margin-top:100px;
+    text-align: center;
 }
 
 .titleContainer h2 {
@@ -50,10 +70,14 @@ nav {
     border-top: 2px solid black;
 } */
 nav li {
-    margin: auto;
+    margin: 5px auto;
     text-align: center;
     list-style: none;
     cursor: pointer;
+}
+
+nav li:hover {
+    background-color: lightgray;
 }
 
 main {
@@ -72,16 +96,19 @@ main {
 
 .imgContainer {
     overflow: hidden;
-    border: 1px solid black;
-    width: 280px;
-    height: 200px;
-    
+    border: 2px solid black;
+    border-radius: 6px;
+    width: 300px;
+    height: 250px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .imgContainer img {
-    width: 280px;
+    width: 250px;
     height: 200px;
-    margin: auto;
+    
 }
 
 .deal {
@@ -114,3 +141,45 @@ main {
     text-align: center;
     margin-top: 50px;
 }
+
+
+/* The Modal (background) */
+.modal {
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+  }
+  
+  /* Modal Content */
+  .modal-content {
+    background-color: white;
+    margin: auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    height: 400px;
+  }
+  
+  /* The Close Button */
+  .close {
+    color: #aaaaaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+  } 
+  
