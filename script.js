@@ -6,6 +6,15 @@ window.onload = async function () {
     app.products = products;
 }
 
+// Closes pop-up if click is in the background
+window.onclick = function (event) {
+    if (event.target.id == "modalBox") {
+        let div = document.getElementById('modalBox');
+        div.style.display = "none";
+        app.isProductSelected = false;
+        app.productId = "";
+    }
+}
 
 async function fetchProducts() {
     await axios.get('/products/products.json')
@@ -16,11 +25,13 @@ async function fetchProducts() {
             console.log("Något gick fel: " + error)
         })
         .finally(() => {
-            app.loading = false;
+            app.loading = false; // Will start creating the components
         });
 }
 
-
+function getProduct(productId) {
+    return products.find(p => p.ID == productId);
+}
 
 Vue.component('vueheader', {
     data: function () {
@@ -28,9 +39,6 @@ Vue.component('vueheader', {
             title: "wallenas clothing company",
             description: "basic clothing and fair pricing"
         }
-    },
-    created: function () {
-        console.log("header skapad");
     },
     template: '<div>' +
         '<div class="titleContainer">' +
@@ -59,6 +67,7 @@ Vue.component('about', {
                 "quibusdam sed amet tempora."
         }
     },
+    // TODO: Gör stil av detta
     template: '<div class="about">' +
         '<h2>{{title}}</h2>' +
         '<h3 class="thin">{{subheader}}</h3>' +
@@ -81,9 +90,7 @@ Vue.component('deals', {
 
             // Get all products that has ShowOnFirstPage == true and is in stock
             this.firstPageProducts = products.filter(p => p.ShowOnFirstPage && p.InStock > 0);
-            // TODO: Randomize three products from an array that holds all first page items
-
-            console.log(this.firstPageProducts);
+            // TODO: Randomize three products from an array that holds all first page items (admin-functionality)
         }
     },
     created: function () {
@@ -104,10 +111,11 @@ Vue.component('deals', {
         '</div></div></div></div>'
 })
 
+// TODO: Gör en snygg stil av detta
 Vue.component('popped-product', {
     data: function () {
         return {
-            product: products.find(p => p.ID == app.productId),
+            product: getProduct(app.productId),
         }
     },
     template: '<div id="modalBox" class="modal" style="display: block;">' +
@@ -138,19 +146,49 @@ Vue.component('product-category', {
         '<div class="flex">' +
         '<p class="thin">Add to cart:</p>' +
         '<div class="dealInputs">' +
-        '<input type="number" min="1" v-bind:max="product.InStock" value="1">' +
+        '<input type="number" min="1" v-bind:max="product.InStock" v-bind:value="1"' +
         '<button class="cart-button">OK</button>' +
         '</div></div></div></div>'
+})
+
+Vue.component('cartvue', {
+    data: function () {
+        return {
+            cart: cart,
+            total: 0,
+            totalstring: ""
+        }
+    },
+    created: function () {
+        this.total = this.getTotal();
+    },
+    methods: {
+        getTotal: function () {
+            this.cart.forEach(p => {
+                this.total += (p.product.Price * p.quantity);
+
+                console.log("total: ")
+                console.log(typeof (this.total) + ": " + this.total.toFixed(2) + ':-');
+            })
+
+            // Format total to string and swedish currency (to keep it simple)
+            this.totalstring = this.total.toLocaleString(('se-SE'));
+        }
+    },
+    template: '<div class="cart">' +
+        '<li v-for="product in cart">{{product.product.Title}} -- Qty: {{product.quantity}} -- Price/item: {{product.product.Price}} -- Line total: {{(product.product.Price * product.quantity).toLocaleString(\'se-SE\')}}</li>' +
+        '<p class="bold">Total: {{totalstring}}:-</p>' +
+        '</div>'
 })
 
 var app = new Vue({
     el: "#app",
     data: {
-        currentPage: "HOME", //sets starting page
+        currentPage: "HOME", // sets starting page
         products: Array,
-        isProductSelected: false,
+        isProductSelected: false, // controls the pop-up/modal box
         productId: "", //istället för hela objektet
-        loading: true,
+        loading: true, // while loading products from API
         cart: []
 
     },
@@ -171,11 +209,10 @@ var app = new Vue({
             this.productId = "";
         },
         addToCart: function (productId) {
-            let product = products.find(p => p.ID == productId);
-
+            let product = getProduct(productId);
             let indexOfObj = cart.findIndex((p => p.product.ID == productId));
-            
-            // if product is not in the cart (index returns -1), then add to cart
+
+            // if product is not in the cart (index = -1), then add to cart
             if (indexOfObj === -1) {
                 cart.push({ product: product, quantity: + 1 })
                 console.log("Object not found in cart and pushed successfully. Current index of object: ");
@@ -184,6 +221,7 @@ var app = new Vue({
                 this.updateCart();
                 return;
             }
+
             // if product already is in cart, add +1 to its quantity
             cart[indexOfObj].quantity += 1;
             console.log(cart[indexOfObj])

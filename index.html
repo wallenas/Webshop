@@ -43,8 +43,7 @@
                 </div>
 
                 <div v-if="currentPage === 'CART'">
-                    <li v-for="object in cart">{{object.product.Title}}, {{object.quantity}}st, Total: {{object.product.Price * object.quantity}}:- </li>
-
+                    <cartvue></cartvue>
                 </div>
 
                 <div v-else :key="currentPage">

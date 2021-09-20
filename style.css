@@ -102,6 +102,13 @@ main {
     align-items: center;
 }
 
+.imgContainer :hover,
+.imgContainer :hover{
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 50%;
+}
+
 .imgContainer img {
     width: 250px;
     height: 200px;
@@ -162,7 +169,7 @@ main {
     padding: 20px;
     border: 1px solid #888;
     width: 80%;
-    height: 400px;
+    height: 600px;
   }
   
   /* The Close Button */
