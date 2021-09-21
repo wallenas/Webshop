@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link href="style.css" rel=stylesheet>
+    <title>Document</title>
+</head>
+
+<body>
+    <div id="app">
+        <div v-if="loaded">
+            <div class="cart">
+                <div class="cartHeaders">
+                    <h2>Product</h2>
+                    <h2>Quantity</h2>
+                    <h2>Price</h2>
+                    <h2>Total</h2>
+                </div>
+                <div class="cartItem" v-for="p in cart">
+                    <div class="productInfo" style="display: flex; align-items: center;">
+                        
+                        <div class="cartImgContainer">
+                            <img class="cartImg" v-bind:src="p.product.Img">
+                        </div>
+
+                        <div style="width: 200px; margin-left: 10px;">
+                            <h3 style="text-align: left;">{{p.product.Title}}</h3>
+                            <p style="text-align: left; font-size: 14px;">{{p.product.Category.toLowerCase()}}</p>
+                        </div>
+                    </div>
+
+
+                    <div class="quantityContainer" :key="p.quantity">
+                        <!--Minus-tecken-->
+                        <span class="minus bold" @click="changeQty(-1, p)">&minus;</span>
+
+                        <p v-model="p.quantity">{{p.quantity}}</p>
+                        <!--Plus-tecken-->
+                        <span class="plus bold" @click="changeQty(1, p)">&plus;</span>
+                    </div>
+
+                    <div class="priceContainer">
+                        <p>Price per item: <span class="bold">{{p.product.Price}}:-</span></p>
+                    </div>
+
+                    <div class="totalContainer">
+                        <p>{{p.quantity}} * {{p.product.Price}}:-</p>
+                        
+                        <hr>
+
+                        <p class="bold">{{p.quantity * p.product.Price}}:-</p>
+                    </div>
+
+                </div>
+            </div>
+
+            <h1>Total: 12345:-</h1>
+        </div>
+    </div>
+    <script>
+        let products = [];
+        let productId = "";
+        let cart = [];
+
+
+        getProducts();
+
+
+
+        
+
+        function getProducts() {
+            axios.get('/products/products.json')
+                .then(response => {
+                    app.products = response.data;
+                    products = app.products;
+                })
+                .catch()
+                .finally(() => {
+                    cart = [];
+                    let product = products[1]
+                    cart.push({ product: product, quantity: 4 });
+                    product = products[0];
+                    cart.push({ product: product, quantity: 2 });
+                    console.log(cart);
+                    app.loaded = true;
+                })
+        }
+
+        var app = new Vue({
+            el: "#app",
+            data: {
+                products: [],
+                loaded: false
+            }
+        })
+
+
+    </script>
+</body>
+
+</html>

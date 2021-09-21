@@ -1,6 +1,6 @@
 [
   {
-    "ID": "3f9f13bf-e48c-47df-912d-47249392a760",
+    "ID": "ba58d138-964d-4519-a452-55eb8c34101a",
     "Category": "TSHIRT",
     "Title": "IT IS WHAT IT IS",
     "Price": 299.9,
@@ -10,7 +10,7 @@
     "InStock": 4
   },
   {
-    "ID": "6f979183-24ae-427a-ba4e-750d7f8fd99d",
+    "ID": "1bcb6810-b8a4-4a8f-8e02-9f8c4d496358",
     "Category": "TSHIRT",
     "Title": "PLAIN WHITE TEE",
     "Price": 99.9,
@@ -20,7 +20,7 @@
     "InStock": 10
   },
   {
-    "ID": "eb159364-4b43-49bd-86b2-530ac2fe5430",
+    "ID": "2e1c7203-8960-4f68-b726-3ef613d8f0ff",
     "Category": "UNDERWEAR",
     "Title": "Kalsong",
     "Price": 59.5,
@@ -30,7 +30,7 @@
     "InStock": 2
   },
   {
-    "ID": "89cdb4fe-568e-40b4-b209-affd471596af",
+    "ID": "bfdd5093-360e-45ed-9a6e-a9d381997446",
     "Category": "PANTS",
     "Title": "THE WORKING MAN JEANS",
     "Price": 499.9,

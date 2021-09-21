@@ -1,0 +1,85 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.cart{
+    border: 2px solid red;
+    margin: 0 20px;
+    margin-top: 100px; /*remove when implemented*/
+}
+
+.cartHeaders,
+.cartItem {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding: 10px;
+    text-align: center;
+}
+
+.cartHeaders h2{
+    margin: 10px;
+    text-align: left;
+}
+
+.cartItem {
+    border-radius: 10px;
+    background-color: rgb(247, 243, 243);
+    margin: 10px;
+    padding: 10px;
+    padding-right: 10px;
+    
+}
+.cartImgContainer {
+    border: 2px solid black;
+    overflow: hidden;
+    border-radius: 6px;
+    width: 110px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cartImg {
+    width: 110px;
+    height: 90px;
+}
+
+.quantityContainer {
+    display: flex;
+    
+    justify-content: center;
+    align-items: center;
+}
+
+.priceContainer, .totalContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+hr {
+    width: 100%;
+}
+
+.quantityContainer p{
+    margin: 5px 20px;
+}
+
+.minus, .plus {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.minus:hover,
+.plus:hover {
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 70%;
+}
+.bold {
+    font-weight: bold;
+}

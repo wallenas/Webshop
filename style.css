@@ -81,12 +81,15 @@ main {
     grid-area: main;
 }
 
-.deals h2 {
+.deals h2,
+.cart h2,
+.categoryProducts h2 {
     text-align: center;
     margin: 20px auto;
 }
 
-.dealsContainer {
+.dealsContainer,
+.cpContainer {
     display: flex;
     margin: auto 0;
 }
@@ -102,11 +105,11 @@ main {
     align-items: center;
 }
 
-.imgContainer :hover,
-.imgContainer :hover{
+.imgContainer:hover,
+.imgContainer:focus{
     text-decoration: none;
     cursor: pointer;
-    opacity: 50%;
+    opacity: 70%;
 }
 
 .imgContainer img {
@@ -115,7 +118,8 @@ main {
     
 }
 
-.deal {
+.deal,
+.category {
     margin: auto;
     text-align: center;
 }
@@ -125,7 +129,6 @@ main {
 }
 
 .flex {
-    /* border: 1px solid red; */
     display: flex;
     margin: auto;
     
@@ -149,41 +152,118 @@ main {
 
 /* The Modal (background) */
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
-    padding-top: 100px; /* Location of the box */
+    display: none; 
+    position: fixed; 
+    z-index: 1; 
+    padding-top: 100px; 
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
+    width: 100%; 
+    height: 1000%; 
+    overflow: auto; 
     background-color: rgb(0,0,0); /* Fallback color */
     background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
   }
-  
+
   /* Modal Content */
-  .modal-content {
+.modal-content {
     background-color: white;
     margin: auto;
     padding: 20px;
     border: 1px solid #888;
-    width: 80%;
-    height: 600px;
-  }
+    width: 60%;
+    height: 400px;
+ }
   
   /* The Close Button */
-  .close {
+.close {
     color: #aaaaaa;
     float: right;
     font-size: 28px;
     font-weight: bold;
-  }
+}
   
-  .close:hover,
-  .close:focus {
+.close:hover,
+.close:focus,
+.minus:hover,
+.plus:hover {
     color: #000;
     text-decoration: none;
     cursor: pointer;
-  } 
+}
+
+.cart{
+    margin: 0 20px;
+}
+
+.cartHeaders,
+.cartItem {
+    display: grid;
+    grid-template-columns: 3fr 1fr 1fr 1fr;
+    padding: 10px;
+    text-align: center;
+}
+.cartHeaders h2{
+    margin: 10px;
+    text-align: center;
+}
+
+.cartItem {
+    border-radius: 10px;
+    background-color: rgb(247, 243, 243);
+    margin: 10px;
+    padding: 10px;
+    padding-right: 10px;
+    
+}
+.cartImgContainer {
+    border: 2px solid black;
+    overflow: hidden;
+    border-radius: 6px;
+    width: 110px;
+    height: 80px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.cartImg {
+    width: 110px;
+    height: 90px;
+}
+
+.quantityContainer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.priceContainer, .totalContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+}
+
+hr {
+    width: 100%;
+}
+
+.quantityContainer p{
+    margin: 5px 20px;
+}
+
+.minus, .plus {
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.minus:hover,
+.plus:hover {
+    text-decoration: none;
+    cursor: pointer;
+    opacity: 70%;
+}
+
+
   

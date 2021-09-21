@@ -28,32 +28,36 @@
             <li @click="changePage('CART')" v-if="cart.length">cart</li>
         </nav>
 
-        <main id="main" v-if="!loading">
-                <div v-if="currentPage === 'HOME'">
-                    <!-- Show three selected items -->
-                    <deals></deals>
+        <main id="main" v-if="isLoaded">
+            <div v-if="currentPage === 'HOME'">
+                <!-- Show three selected items -->
+                <deals></deals>
 
-                    <div v-if="isProductSelected">
-                        <popped-product></popped-product>
-                    </div>
-
-                    <article>
-                        <about></about>
-                    </article>
+                <div v-if="isProductSelected">
+                    <popped-product></popped-product>
                 </div>
 
-                <div v-if="currentPage === 'CART'">
-                    <cartvue></cartvue>
-                </div>
+                <article>
+                    <about></about>
+                </article>
+            </div>
 
-                <div v-else :key="currentPage">
-                    <product-category></product-category>
-
-                    <div v-if="isProductSelected">
-                        <popped-product></popped-product>
-                    </div>
-                </div>
+            <div v-else-if="currentPage === 'CART'">
+                <cartvue></cartvue>
+                <payment v-if="showPayment"></payment>
+            </div>
             
+
+            <div v-else :key="currentPage">
+                <category-products></category-products>
+
+                <div v-if="isProductSelected">
+                    <popped-product></popped-product>
+                </div>
+            </div>
+
+          
+
         </main>
         <aside>
             <!-- Put cart here? -->
