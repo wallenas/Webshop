@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Refs</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+
+<body>
+    <div id="app">
+
+        
+        <input type="text" ref="inputtext" />
+        <button v-on:click="readRefs">Submit</button>
+        <p>Texten: {{myText}}</p>
+        <div ref="myDiv">Hejsan</div>
+
+        <label for="fornamn">Ange förnamn</label>
+        <input type="text" id="fornamn" ref="namn_fornamn" /><br>
+        <label for="efternamn">Ange efternamn</label>
+        <input type="text" id="efternamn" ref="namn_efternamn" />
+
+        <p>Du heter: {{allNames}}</p>
+    </div>
+
+    <script>
+        new Vue({
+            el: '#app',
+            data: {
+                myText: "En text",
+                allNames: ""
+            },
+            methods: {
+                readRefs: function () {
+                    console.log(this.$refs)
+                    console.log(this.$refs.inputtext.value)
+                    console.log(this.$refs.myDiv.innerText)
+                    this.myText = this.$refs.inputtext.value
+
+                    this.allNames = ""
+                    for (const [key, value] of Object.entries(this.$refs)) {
+                        if(value.tagName == "INPUT")
+                        {
+                            console.log(key + "=" + value.value);
+                            
+                        }
+                        else{
+                            console.log(key + "=" + value.innerText);
+                        }
+                        if(key.startsWith('namn_'))
+                        {
+                            this.allNames += value.value.toUpperCase() + " "
+                        }
+                    }
+
+                }
+            }
+        })
+    </script>
+</body>
+
+</html>

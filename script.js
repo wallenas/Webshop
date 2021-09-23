@@ -15,6 +15,17 @@ window.onclick = function (event) {
         app.isProductSelected = false;
         app.productId = "";
     }
+
+    else if (event.target.id === 'purchaseDone') {
+        let div = document.getElementById('purchaseDone');
+        cart = [];
+        app.cartCount = 0;
+        app.isPaymentComplete = false;
+        console.log()
+
+        app.changePage("HOME");
+        div.style.display = "none";
+    }
 }
 
 async function fetchProducts() {
@@ -30,39 +41,19 @@ async function fetchProducts() {
             // clone, to keep track of cart (I'm aware that this is ineffective in larger projects)
             productsClone = JSON.parse(JSON.stringify(app.products));
             app.isLoaded = true; // Will start creating the components
-
         });
 }
 
 
-function changeQty(amount, cartObject) {
-    // add to quantity
-    cartObject.quantity += amount; // -1 or +1
-
-    amount == -1 ? cartObject.product.InStock += 1 : cartObject.product.InStock -= 1;
-    
-    let originalProduct = getRealProduct(cartObject.product);
-    
-    if (cartObject.quantity < 1) {
-        // TODO: Remove product metod?
-        cartObject.product.InStock -= cartObject.quantity;
-        cartObject.quantity = 1;
-
-        // TODO: explain this spaghetti
-        if(cartObject.quantity === 1){
-            cartObject.product.InStock = originalProduct.InStock - 1;
-        }
+function getGUID() {
+    var u = '', i = 0;
+    while (i++ < 36) {
+        var c = 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'[i - 1],
+            r = Math.random() * 16 | 0,
+            v = c == 'x' ? r : (r & 0x3 | 0x8);
+        u += (c == '-' || c == '4') ? c : v.toString(16)
     }
-    
-    else if (cartObject.quantity > originalProduct.InStock) {
-        cartObject.quantity = originalProduct.InStock;
-        cartObject.product.InStock = 0;
-        // TODO: gör pil o-klickbar
-    }
-    console.log("antal i kundkorgen av produkt: " + cartObject.quantity);
-    // console.log("original produkts instock: " + originalProduct.InStock)
-    console.log("klonens instock: " + cartObject.product.InStock)
-    
+    return u;
 }
 
 function getRealProduct(product) {
@@ -137,19 +128,25 @@ Vue.component('deals', {
         this.getFirstPageProducts();
     },
 
-    template: '<div class="deals">' +
-        '<div>' +
-        '<h2>deals of the week</h2>' +
-        '</div>' +
-        '<div class="dealsContainer">' +
-        '<div class="deal" v-for="product in firstPageProducts" >' +
-        '<div class="imgContainer" @click="app.showProduct(product.ID)" >' +
-        '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
-        '</div>' +
-        '<p class="bold">{{product.Title}}, {{product.Price}}:-</p>' +
-        '<button class="cart-button" v-if="product.InStock > 0" @click="app.addToCart(product.ID)">Add to cart</button>' +
-        '<button class="cart-button" v-else>Kan inte lägga till fler av denna produkt</button>' +
-        '</div></div></div></div>'
+
+
+    template: `<div class="categoryProducts">
+    <div>
+        <h2>deals of the week</h2>
+    </div>
+    <div class="cpContainer">
+        <div class="category" v-for="product in firstPageProducts">
+            <div class="imgContainer" @click="app.showProduct(product.ID)" >
+                <img v-bind:src="product.Img" v-bind:alt="product.Title">
+            </div>
+            <p>{{product.Title}}</p>
+            <p><strong>{{product.Price.toFixed(2)}}:-<strong></p>
+            <p>In stock: {{product.InStock}}</p>
+            <button class="cart-button" v-if="product.InStock > 0" @click="app.addToCart(product.ID)">Add to cart</button>
+            <button class="cart-button" v-else>Kan inte lägga till fler av denna produkt</button>
+        </div>
+    </div>
+</div>`
 })
 
 // TODO: Gör en snygg stil av detta
@@ -159,13 +156,25 @@ Vue.component('popped-product', {
             product: getCloneProduct(app.productId),
         }
     },
-    template: '<div id="modalBox" class="modal" style="display: block;">' +
-        '<div class="modal-content">' +
-        '<span class="close" onclick="app.closeModal()">&times;</span>' +
-        '<p>{{product.Title}}</p>' +
-        '<p>{{product.Price}}</p>' +
-        '<p>{{product.Description}}</p>' +
-        '</div></div>'
+    template: `<div id="modalBox" class="modal" style="display: block;">
+                    <div class="modal-content">
+                        <span class="close" onclick="app.closeModal()">&times;</span>
+                        <div class="modalContentContainer">
+                            <h1>{{product.Title}}</h1>
+                            <div class="modalImgContainer" style="margin: auto;">
+                                <img v-bind:src="product.Img" v-bind:alt="product.Title">
+                            </div>
+                            <div class="align-left">
+                                <p>Price: <strong>{{product.Price.toFixed(2)}}:-</strong></p>
+                                <h2><strong>Description:</strong></h2>
+                                <p>{{product.Description}}</p>
+                                <p>In stock: {{product.InStock}}</p>
+                            </div>
+                            <button class="cart-button" v-if="product.InStock > 0" @click="app.addToCart(product.ID)">Add to cart</button>
+                            <button class="cart-button" v-else>Kan inte lägga till fler av denna produkt</button>
+                        </div>
+                    </div>
+                </div>`
 })
 
 Vue.component('category-products', {
@@ -177,200 +186,507 @@ Vue.component('category-products', {
     },
 
     created: function () {
-        console.log("skapar category-products");
         let currentPage = app.currentPage.toLowerCase();
         // Adds an "s" to tshirt
         if (currentPage === "tshirt") {
-            this.category = currentPage.concat("s"); //tshirts
+            this.category = "t-shirts";
             return;
         }
 
         this.category = currentPage;
     },
 
-    template: '<div class="categoryProducts">' +
-        '<div>' +
-        '<h2>{{category}}</h2>' +
-        '</div>' +
-        '<div class="cpContainer">' +
-        '<div class="category" v-for="product in productsInCategory">' +
-        '<div class="imgContainer" @click="app.showProduct(product.ID)" >' +
-        '<img v-bind:src="product.Img" v-bind:alt="product.Title">' +
-        '</div>' +
-        '<p class="bold">{{product.Title}}, {{product.Price}}:-</p>' +
-        '<button class="cart-button"  v-if="product.InStock > 0" @click="app.addToCart(product.ID)">add to cart</button>' +
-        '<button class="cart-button" v-else>Kan inte lägga till fler av denna produkt</button>' +
-        '</div></div></div></div></div>'
+    template: `<div class="categoryProducts">
+                    <div>
+                        <h2>{{category}}</h2>
+                    </div>
+                    <div class="cpContainer">
+                        <div class="category" v-for="product in productsInCategory">
+                            <div class="imgContainer" @click="app.showProduct(product.ID)" >
+                                <img v-bind:src="product.Img" v-bind:alt="product.Title">
+                            </div>
+                            <p>{{product.Title}}</p>
+                            <p><strong>{{product.Price.toFixed(2)}}:-<strong></p>
+                            <p>In stock: {{product.InStock}}</p>
+                            <button class="cart-button" v-if="product.InStock > 0" @click="app.addToCart(product.ID)">Add to cart</button>
+                            <button class="cart-button" v-else>Kan inte lägga till fler av denna produkt</button>
+                        </div>
+                    </div>
+                </div>`
 })
 
 Vue.component('cartvue', {
     data: function () {
         return {
             cart: cart,
-            totalstring: ""
+            totalstring: "",
+            total: 0
         }
     },
     created: function () {
-        this.getTotal();
+        this.setTotalAndVat();
     },
     methods: {
-        getTotal: function () {
-            let calc = 0;
+        setTotalAndVat: function () {
+            this.total = 0;
             this.cart.forEach(p => {
-                calc += p.product.Price * p.quantity;
+                this.total += p.product.Price * p.quantity;
             })
-
-            let total = calc.toFixed(2);
-            // Format total to string and swedish currency (to keep it simple)
-            return total.toLocaleString(('se-SE'));
-        },
-        getCurrencyFormatedString: function (product) {
-            let price = product.product.Price;
-            price = price.toFixed(2);
-            return price.toLocaleString(('se-SE')) + ":-";
+            this.total = this.total;
         },
         getLineTotalToCurrency: function (product) {
             let total = product.product.Price * product.quantity;
-            total = total.toFixed(2);
-            return total.toLocaleString(('se-SE')) + ":-";
-        }
-    },
+            return total.toFixed(2) + ":-";
+        },
+        // TODO: this one works but is the ONLY place where i use the cloned array. stupid
+        changeQty: function (amount, cartObject) {
+            cartObject.quantity += amount; // add/remove 1 from quantity
+            amount == -1 ? cartObject.product.InStock += 1 : cartObject.product.InStock -= 1
 
-    template: '<div v-if="cart.length">' +
-        '<h2 style="text-align: center; margin: 5px; padding: 5px;">cart</h2>' +
-        '<div class="cart">' +
-        '<div class="cartHeaders"><h2>Product</h2><h2>Quantity</h2><h2>Price</h2><h2>Total</h2></div>' +
-        '<div class="cartItem" v-for="p in cart">' +
-        '<div class="productInfo" style="display: flex; align-items: center;">' +
-        '<div class="cartImgContainer">' +
-        '<img class="cartImg" v-bind:src="p.product.Img">' +
-        '</div>' +
-        '<div style="width: 200px; margin-left: 10px;">' +
-        '<h3 style="text-align: left;">{{p.product.Title}}</h3>' +
-        '<p style="text-align: left; font-size: 14px;">{{p.product.Category.toLowerCase()}}</p>' +
-        '<button @click="app.removeFromCart(p)" style="float: left;">Remove</button>' +
-        '</div>' +
-        '</div>' +
-        '<div class="quantityContainer">' +
-        '<span class="minus bold" @click="changeQty(-1, p)">&minus;</span>' +
-        '<p v-model="p.quantity">{{p.quantity}}</p>' +
-        '<span class="plus bold" @click="changeQty(1, p)">&plus;</span >' +
-        '</div>' +
-        '<div class="priceContainer">' +
-        '<p class="bold">{{getCurrencyFormatedString(p)}}</p>' +
-        '</div>' +
-        '<div class="totalContainer">' +
-        '<p class="bold">{{getLineTotalToCurrency(p)}}</p>' +
-        '</div></div>' +
-        '<div>Total: {{getTotal()}}:-</div>' +
-        '<button @click="app.goToPayment()">Pay Now</button>' +
-        '</div></div>'
-})
+            let originalProduct = getRealProduct(cartObject.product);
+
+            // to keep at least one object in the cart (so that quantity doesn't become 0 etc.)
+            if (cartObject.quantity <= 1) {
+                cartObject.product.InStock = originalProduct.InStock - 1;
+                cartObject.product.InStock = originalProduct.InStock - 1;
+                cartObject.quantity = 1;
+            }
+
+            // if the quantity is larger than what's in stock (comparing to original (unchanged) product to keep track of InStock)
+            else if (cartObject.quantity > originalProduct.InStock) {
+                cartObject.quantity = originalProduct.InStock;
+                cartObject.product.InStock = 0;
+            }
+
+            // sets total amount of products in cart
+            this.setCartCount();
+            this.setTotalAndVat();
+        },
+        setCartCount() {
+            app.cartCount = 0;
+            this.cart.forEach(p => {
+                app.cartCount += p.quantity;
+            })
+        },
+    },
+    template: `<div v-if="cart.length">
+                    <h2 style="text-align: center; margin: 5px; padding: 5px;">cart</h2>
+                    <div class="cartHeaders">
+                        <h2>Product</h2>
+                        <h2>Quantity</h2>
+                        <h2>Price</h2>
+                        <h2>Total</h2>
+                    </div>
+                    <div class="cart">
+                        <div class="cartItem" v-for="p in cart">
+                            <div class="productInfo" style="display: flex; align-items: center;">
+                                <div class="cartImgContainer">
+                                    <img class="cartImg" v-bind:src="p.product.Img">
+                                </div>
+                                <div style="width: 200px; margin-left: 10px;">
+                                    <h3 style="text-align: left;">{{p.product.Title}}</h3>
+                                    <p style="text-align: left; font-size: 14px;">{{p.product.Category.toLowerCase()}}</p>
+                                    <button @click="app.removeFromCart(p)" style="float: left;" v-if="!app.showPayment">Remove</button>
+                                </div>
+                            </div>
+                            <div class="quantityContainer">
+                                <span class="minus bold" @click="changeQty(-1, p)" v-if="!app.showPayment">&minus;</span>
+                                <p v-model="p.quantity">{{p.quantity}}</p>
+                                <span class="plus bold" @click="changeQty(1, p)" v-if="!app.showPayment">&plus;</span >
+                            </div>
+                            <div class="priceContainer">
+                                <p class="bold">{{p.product.Price.toFixed(2)}}:-</p>
+                            </div>
+                            <div class="totalContainer">
+                                <p class="bold">{{getLineTotalToCurrency(p)}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="total">
+                        <h4 v-if="!app.showPayment">Total: {{total.toFixed(2)}}:-</h4>
+                        <div class="pay-cancel">
+                            <button @click="app.goToPayment(total)" v-if="!app.showPayment">Pay Now</button>
+                            <button id="cancelButton" @click="app.cancelOrder()">Cancel order</button>
+                        </div>
+                    </div>
+                </div>`
+});
 
 Vue.component('payment', {
     data: function () {
         return {
+            total: 0,
+            vat: this.setVat(),
+            firstName: null,
+            lastName: null,
+            email: null,
+            phoneNumber: null,
+            country: null,
+            city: null,
+            street: null,
+            zipCode: null,
+            errors: [],
+            isPaymentComplete: false,
+            shippingCost: 40,
+            isPayingByBank: false
+
+        }
+    },
+    created: function () {
+        this.total = app.orderTotal;
+        console.log("payment created. total = " + this.total)
+        this.setVat();
+    },
+    methods: {
+        setVat: function () {
+            this.vat = (this.total * 0.25).toFixed(2);
+        },
+        setShippingCost: function (shipping) {
+            if (shipping === "schenker") {
+                this.shippingCost = 40;
+            }
+            else {
+                this.shippingCost = 25
+            }
+        },
+        changePaymentOption() {
+            if (!this.isPayingByBank) {
+                this.isPayingByBank = true;
+                return;
+            }
+            this.isPayingByBank = false;
+        },
+        checkForm: function (e) {
+            try {
+                this.errors = [];
+
+                for (const [key, value] of Object.entries(this.$refs)) {
+                    value.value = value.value.trim() //remove any leading or ending whitespace
+                    value.style.border = "";
+
+                    if (!value.value) {
+                        this.errors.push("error with " + key)
+                        // alternativt appenda klassnamn, typ value.className += " red-border";
+                        value.style.border = "2px solid red";
+                    }
+
+                    else if (key.startsWith("number_")) {
+                        let regexLetters = /[A-Za-z]/g; // contains any letter (case insensitive) or whitespace
+
+                        value.value = value.value.replace(/\s/g, ""); // remove ALL whitespace in the string
+
+                        if (regexLetters.test(value.value)) {
+                            console.log("Nummerinput innehåller bokstäver eller mellanslag");
+                            this.errors.push("error with " + key);
+                            value.style.border = "2px solid red";
+                        }
+                    }
+                }
+
+                if (!this.errors.length) {
+                    this.completePayment();
+                    return true;
+                }
+
+                console.log(this.errors);
+                e.preventDefault();
+            }
+            catch (error) {
+                alert(error);
+                e.preventDefault();
+            }
+
+        },
+        completePayment: function () {
+            app.isPaymentComplete = true;
+        }
+    },
+    template: `<div>
+                    <form id="deliveryDetails" action="#" method="post">
+                        <h1>Delivery details</h1>
+                        <div id="pay" class="payment">
+                            <div class="details" >
+                                <label for="firstName">First name:</label>
+                                <input id="firstName" class="inputs" type="text" ref="name_first" name="firstName" v-model="firstName">
+                                <label for="lastName">Last name:</label>
+                                <input id="lastName" class="inputs" type="text" ref="name_last" name="lastName" v-model="lastName">
+                                <label for="phonenumber">Phone number:</label>
+                                <input id="phonenumber" class="inputs" type="tel" ref="number_phonenr" name="phoneNumber" v-model="phoneNumber">
+                                <label for="email">E-mail:</label>
+                                <input id="email" class="inputs" type="email" ref="email" name="email" v-model="email">
+                            
+                                <label for="country">Country:</label>
+                                    <input id="country" type="text" class="inputs" ref="country" name="country" v-model="country">
+                                    <label for="city">City:</label>
+                                    <input id="city" type="text" class="inputs" ref="city" name="city" v-model="city">
+                                    <label for="street">Street:</label>
+                                    <input id="street" type="text" class="inputs" ref="street" name="street" v-model="street">
+                                    <label for="zipcode">Zip code:</label>
+                                    <input id="zipcode" type="text" class="inputs" ref="number_zip" name="zipCode" v-model="zipCode">
+                            </div>
+                        </div>
+                        <div>
+                            <h2>Choose payment option: </h2>
+                            <div class="radios">
+                                <div class="flex-row">    
+                                    <label for="swish">Swish</label>
+                                    <input id="swish" type="radio" v-on:change="changePaymentOption()" name="paymentOption" value="swish" checked ref="payment_swish">
+                                </div>
+                                <div class="flex-row">
+                                    <label for="bank">Bank</label>
+                                    <input id="bank" type="radio" v-on:change="changePaymentOption()" value="bank" name="paymentOption" ref="payment_bank">
+                                </div>
+                            </div>
+
+                        <div class="details" v-if="isPayingByBank">
+                            <label for="cardNumber">Card number:</label>
+                            <input id="cardNumber" type="text" name="cardNumber" ref="cardNumber" placeholder="xxxx-xxxx-xxxx-xxxx">
+                            <label for="cvc">CVC:</label>
+                            <input id="cvc" type="number" class="inputs" name="cvc" ref="cvc" style="width: 60px">
+
+                            
+                            <label for="month">MM:</label>
+                            <select ref="month" id="month">
+                                <option value="">-Select Month-</option>
+                                <option value="01">January</option>
+                                <option value="02">February</option>
+                                <option value="03">March</option>
+                                <option value="04">April</option>
+                                <option value="05">May</option>
+                                <option value="06">June</option>
+                                <option value="07">July</option>
+                                <option value="08">August</option>
+                                <option value="09">September</option>
+                                <option value="10">October</option>
+                                <option value="11">November</option>
+                                <option value="12">December</option>
+                            </select>
+                            <label for="year">YY:</label>
+                            <select ref="year" id="month">
+                                <option value="">-Select Year-</option>
+                                <option value="2021">2021</option>
+                                <option value="2022">2022</option>
+                                <option value="2023">2023</option>
+                                <option value="2024">2024</option>
+                                <option value="2025">2025</option>
+                                <option value="2026">2026</option>
+                                <option value="2027">2027</option>
+                            </select>
+                        
+                        </div>
+                        <h2>Shipping</h2>
+                        <div class="radios">
+                            <div class="flex-row">
+                                <label for="schenker">Schenker (40:-)</label>
+                                <input id="schenker" type="radio" name="delivery" value="schenker" checked v-on:change="setShippingCost(\'schenker\')" ref="shipping_schenker">
+                            </div>
+                            <div class="flex-row">
+                                <label for="dhl">DHL (25:-)</label>
+                                <input id="dhl" type="radio" name="delivery" value="DHL" v-on:change="setShippingCost(\'dhl\')" ref="shipping_dhl">
+                            </div>
+                        </div>
+                        <div class="totals">
+                            <p>Cart total: <strong>{{total.toFixed(2)}}:-</strong></p>
+                            <p>VAT (25%): <strong>{{vat}}:-</strong></p>
+                            <p>Shipping: <strong>{{shippingCost}}:-</strong></p>
+                            <p>Order total: <strong>{{(total + shippingCost).toFixed(2)}}:-</strong></p>
+                        </div>
+                        <div class="submitContainer">
+                            <input id="submitButton" type="button" @click="checkForm" value="Complete payment">
+                        </div>
+                    </form>
+                </div>`
+})
+
+Vue.component('purchase-done', {
+    data: function () {
+        return {
             cart: cart,
-            isFormOkay: false,
-            firstName: "",
-            lastName: "",
-            email: "",
-            country: "",
-            city: "",
-            street: "",
-            zipCode: "",
-            paymentMethod: "", // maybe a boolean instead (swish/bank) isPayingByBank?
-            swishImg: "", //for radiobuttons
-            bankImg: "", //for radiobuttons
+            title: "Purchase done",
+            message: "Your purchase is done! Thank you for shopping with wallenas clothing company.",
+        }
+    },
+    template: `<div id="purchaseDone" class="modal" style="display: block;">
+                    <div class="modal-content">
+                        <span class="close" onclick="app.closeModal()">&times;</span>
+                        <h1 style="text-align: center">{{title}}</h1>
+                        <div class="purchaseText">
+                            <h2>{{message}}</h2>
+                            <p>Expected arrival in 2-5 days</p>
+                        </div>    
+                    </div>
+                </div>`
+})
 
+Vue.component('admin', {
+    data: function (){
+        return {
+            productId: "",
+            category: "",
+            title: "",
+            price: 1,
+            description: "",
+            img: "",
+            showOnFirstPage: false,
+            inStock: 0
         }
     },
     methods: {
+        addProduct: function(){
+            productsClone.push({
+                ID: getGUID(),
+                Category: this.category,
+                Title: this.title,
+                Price: parseFloat(this.price),
+                Description: this.description,
+                Img: this.img,
+                ShowOnFirstPage: this.showOnFirstPage,
+                InStock: this.inStock
+            });
 
-    },
-    template: '<div>' +
-        '<div>' +
-        '<h2>Payment</h2>' +
-        '<button @click>Buy now</button>'
-})
+            alert("Product added!");
+        },
+        removeProduct: function(productId){
+            let indexOfObj = productsClone.indexOf(p => p.ID == productId);
 
-// 1. When program loads -> fill app.products with the response, and save the response separetly at the top (window.onload function)
-// 2. When adding to cart, use app.products to handle the InStock of the product (can't add if trying to add more than InStock)
-// 3. When purchase is done -> products = app.products
-// 4. Use products during payout
+            if(indexOfObj != null){
+                productsClone.splice(indexOfObj, 1);
+            }
 
-
-var app = new Vue({
-    el: "#app",
-    data: {
-        currentPage: "HOME", // sets starting page
-        products: Array, // the original response data
-        isProductSelected: false, // controls the pop-up/modal box
-        productId: "", // istället för hela objektet
-        isLoaded: false, // while loading products from API
-        cart: [], // used as a condition in the navbar
-        showPayment: false
-
-    },
-    methods: {
-        changePage: function (pageName) {
-            if (this.currentPage != pageName) {
-                this.currentPage = pageName;
+            else{
+                console.log("Hittade inte produkten/något gick fel");
+                console.log("index of object: " + indexOfObj);
             }
         },
-        showProduct: function (productId) {
-            this.productId = productId;
-            this.isProductSelected = true;
+        getSelectedProduct: function(productId){
+            console.log("inne i get selected product")
+            console.log("selected product id: " + this.productId);
+            let productToEdit = getCloneProduct(productId);
+
+            if (productToEdit == null){
+                console.log("Något gick fel!")
+                return;
+            }
+
+            this.category = productToEdit.Category;
+            this.title = productToEdit.Title;
+            this.price = productToEdit.Price;
+            this.description = productToEdit.Description;
+            this.img = productToEdit.Img;
+            this.showOnFirstPage = productToEdit.ShowOnFirstPage;
+            this.inStock = productToEdit.InStock;
         },
-        closeModal: function () {
-            let div = document.getElementById('modalBox');
-            div.style.display = "none";
-            this.isProductSelected = false;
+        editProduct: function(){
+            let product = getCloneProduct(this.productId);
+            if (product == null){
+                console.log("Kunde inte hitta produkten som skulle redigeras.")
+                return;
+            }
+
+            product.Category = this.category;
+            product.Title = this.title;
+            product.Price = this.price;
+            product.Description = this.description;
+            product.Img = this.img;
+            product.ShowOnFirstPage = this.showOnFirstPage;
+            product.InStock = this.inStock;
+
+            this.clearValues();
+        },
+        clearValues: function() {
+            this.category = "";
+            this.title = "";
+            this.price = 1,
+                this.description = "";
+            this.img = "";
+            this.showOnFirstPage = false;
+            this.inStock = 0;
             this.productId = "";
-        },
-        addToCart: function (productId) {
-            let product = getCloneProduct(productId);
-            // let indexOfObj = cart.findIndex((p => p.product.ID == productId));
-            let cartObject = cart.find((p => p.product.ID == productId));
-
-            if (product.InStock < 1) {
-                console.log("varan är slut, lägger inte till i kundvagnen")
-                return;
-            }
-            // cartObject == null covers both null and undefined
-            if (cartObject == null) {
-                cart.push({ product: product, quantity: 1 })
-                product.InStock -= 1;
-
-                // console.log("klonens inStock (första gången): " + product.InStock)
-                this.updateCart();
-                return;
-            }
-
-            // if product already is in cart, add +1 to its quantity
-            product.InStock -= 1; //klonens InStock
-            cartObject.quantity += 1;
-
-            // let original = getRealProduct(product);
-
-            // to show that we're indeed working with a clone
-            // console.log("klonens inStock: " + product.InStock)
-            // console.log("originalets inStock: " + original.InStock);
-            this.updateCart();
-        },
-        removeFromCart: function (cartObject) {
-            let indexOfObj = cart.findIndex((p => p.product.ID == cartObject.product.ID));
-            cart.splice(indexOfObj, 1);
-            let p = getCloneProduct(cartObject.product.ID)
-
-            // Fill the product's InStock with what was in the cart
-            p.InStock += cartObject.quantity;
-        },
-        updateCart: function () {
-            this.cart = cart;
-        },
-        goToPayment: function () {
-            this.showPayment = true;
         }
-    }
-})
+    },
+
+    template: `<div class="admin">
+                    <h2>admin</h2>
+                    <div class="adminHeaders flex-row">
+                    <li @click="app.addProductPage = true">add product</li>
+                    <li @click="app.addProductPage = false">edit product</li>
+                    </div>
+                    <div class="addProduct" v-if="app.addProductPage">
+                        <h1>Add product</h1>
+                        <form id="adminForm">
+                                <div class="details">
+                                    <label for="category">Category:</label>
+                                    <select id="category" v-model="category">
+                                        <option value="">-Select Category</option>
+                                        <option value="TSHIRT">T-shirt</option>
+                                        <option value="UNDERWEAR">Underwear</option>
+                                        <option value="TSHIRT">Pants</option>
+                                    </select>
+
+                                    <label for="Title">Title:</label>
+                                    <input id="title" class="inputs" type="text" name="title" v-model="title">
+
+                                    <label for="price">Price:</label>
+                                    <input id="price" class="inputs" type="number" name="price" min="0.00" v-model="price">
+
+                                    <label for="description">Description:</label>
+                                    <textarea name="description" id="description" rows="5" v-model="description"></textarea> 
+
+                                    <label for="imgUrl">ImgUrl:</label>
+                                    <input id="imgUrl" type="text" class="inputs" name="img" v-model="img">
+                                    <div class="flex-row">
+                                        <label for="showOnFirstPage">Show on first page:</label>
+                                        <input id="showOnFirstPage" type="checkbox" class="inputs" name="showOnFirstPage" v-model="showOnFirstPage">
+                                    </div>
+                                    <label for="inStock">In stock:</label>
+                                    <input id="inStock" type="number" class="inputs" min="1" name="inStock" v-model="inStock">                               
+                                </div>
+                                </form>
+                                <button @click="addProduct">Add product</button>
+                    </div>
+
+                    <div class="editProduct" v-if="!app.addProductPage">
+                    
+                    <h1>Edit product</h1>
+                    <form id="adminForm">
+                            <div class="details">
+                                <label for="productPicker">Pick product:</label>
+                                
+                                <select id="productPicker" v-model="productId">
+                                    <option value="">-Select Product-</option>
+                                    <option v-for="product in productsClone" v-bind:value="product.ID">{{product.Title}}, DEAL: {{product.ShowOnFirstPage}}</option>
+                                </select>
+                                <div>
+                                <button @click="getSelectedProduct(productId)">Get product</button>
+                                </div>
+                                    <label for="category">Category:</label>
+                                    <select id="category" v-model="category">
+                                    <option value="">-Select Category</option>
+                                    <option value="TSHIRT">T-shirt</option>
+                                    <option value="UNDERWEAR">Underwear</option>
+                                    <option value="TSHIRT">Pants</option>
+                                </select>
+
+                                <label for="Title">Title:</label>
+                                <input id="title" class="inputs" type="text" name="title" ref="title" v-model="title">
+
+                                <label for="price">Price:</label>
+                                <input id="price" class="inputs" type="number" name="price" min="0.00" v-model="price">
+
+                                <label for="description">Description:</label>
+                                <textarea name="description" id="description" rows="5" v-model="description"></textarea> 
+
+                                <label for="imgUrl">ImgUrl:</label>
+                                <input id="imgUrl" type="text" class="inputs" name="img" v-model="img">
+                                <div class="flex-row">
+                                    <label for="showOnFirstPage">Show on first page:</label>
+                                    <input id="showOnFirstPage" type="checkbox" class="inputs" name="showOnFirstPage" v-model="showOnFirstPage">
+                                </div>
+                                <label for="inStock">In stock:</label>
+                                <input id="inStock" type="number" class="inpumts" min="1" name="inStock" v-model="inStock">                               
+                            </div>
+                            </form>
+                            <button @click="editProduct">Save changes</button>
+                    </div>
+                </div>`
+});

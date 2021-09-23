@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form validation</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
+</head>
+
+<body>
+
+
+  <!-- <form id="app" v-on:submit="checkForm"
+    action="http://primat.se/services/sendform.aspx?xid=test&xmail=peter.wallenas@edu.newton.se" method="post">
+
+    <p v-if="errors.length">
+      <b>Please correct the following error(s):</b>
+    <ul>
+      <li v-for="error in errors">{{ error }}</li>
+    </ul>
+    </p>
+
+    <p>
+      <label for="name">Name</label>
+      <input id="name" v-model="name2" type="text" name="name">
+    </p>
+
+    <p>
+      <label for="age">Age</label>
+      <input id="age" v-model="age" type="number" name="age" min="0">
+    </p>
+
+    <p>
+      <label for="movie">Favorite Movie</label>
+      <select id="movie" v-model="movie" name="movie">
+        <option>Star Wars</option>
+        <option>Vanilla Sky</option>
+        <option>Atomic Blonde</option>
+      </select>
+    </p>
+
+    <p>
+      <input type="submit" value="Submit">
+    </p>
+
+  </form> -->
+
+  <form id="deliveryDetails" style="display: flex; flex-direction: column;" v-on:submit="checkForm"
+    action="http://primat.se/services/sendform.aspx?xid=deliverydetails&xmail=peter.wallenas@edu.newton.se"
+    method="post">
+    <!-- <form v-on:submit="checkForm()" id="deliveryDetails" style="display: flex; flex-direction: column;"> -->
+    <h1>Delivery details</h1>
+    <label for="firstName">First name:</label>
+    <input id="firstName" class="inputs" type="text" ref="name_first" name="firstName" v-model="firstName">
+
+    <label for="lastName">Last name:</label>
+    <input id="lastName" class="inputs" type="text" ref="name_last" name="lastName">
+
+    <!-- <label for="phonenumber">Phone number:</label>
+  <input id="phonenumber" class="inputs" type="tel" ref="phonenr" name="phoneNumber">
+
+  <label for="email">E-mail:</label>
+  <input id="email" class="inputs" type="email" ref="email" name="email">
+  <br>
+  <hr>
+  <br>
+  <label for="country">Country:</label>
+  <input id="country" type="text" class="inputs" ref="country" name="country">
+
+  <label for="city">City:</label>
+  <input id="city" type="text" class="inputs" ref="city" name="city">
+
+  <label for="street">Street:</label>
+  <input id="street" type="text" class="inputs" ref="street" name="street">
+
+  <label for="zipcode">Zip code:</label>
+  <input id="zipcode" type="text" class="inputs" ref="zip" name="zipCode">
+
+  <div class="pay">
+      <h2>Choose payment option: </h2>
+      <label for="swish">Swish(bild här istället)</label>
+      <input id="swish" type="radio" name="paymentOption" value="swish" checked ref="payment_swish">
+
+      <label for="bank">Bank (bild här) </label>
+      <input id="bank" type="radio" value="bank" name="paymentOption" ref="payment_bank">
+  </div>
+
+  <div class="shipping">
+      <h2>Shipping</h2>
+      <label for="schenker">Schenker (40:-)</label>
+      <input id="schenker" type="radio" name="delivery" value="schenker" checked ref="shipping_schenker">
+
+      <label for="dhl">DHL (25:-)</label>
+      <input id="dhl" type="radio" name="delivery" value="DHL" ref="shipping_dhl">
+  </div> -->
+    <input style="width: 200px" type="submit" value="Submit">
+  </form>
+
+
+  <script>
+
+    const app = new Vue({
+      el: '#app',
+      data: {
+        errors: [],
+        name2: null,
+        age: null,
+        movie: null
+      },
+      methods: {
+        checkForm: function (e) {
+          console.log(this.name2)
+          if (this.name2 && this.age) {
+            //e.preventDefault();
+            return true;
+          }
+
+          this.errors = [];
+
+          if (!this.name2) {
+            this.errors.push('Name required.');
+          }
+          if (!this.age) {
+            this.errors.push('Age required.');
+          }
+
+          console.log(e);
+          e.preventDefault();
+        }
+      }
+    })
+
+
+    var pay = new Vue({
+      el: "#deliveryDetails",
+      data: {
+        firstName: null,
+        lastName: null,
+        email: null,
+        phoneNumber: null,
+        country: null,
+        city: null,
+        street: null,
+        zipCode: null,
+        paymentMethod: "",
+        errors: []
+        // swishImg: "", //for radiobuttons
+        // bankImg: "", //for radiobuttons
+      },
+      methods: {
+        checkForm: function (e) {
+          console.log(this.firstName)
+          console.log(e);
+          e.preventDefault();
+        }
+      }
+    });
+  </script>
+
+
+
+</body>
+
+</html>

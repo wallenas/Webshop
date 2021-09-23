@@ -15,58 +15,70 @@
 </head>
 
 <body>
-    <div id="app">
-        <header>
-            <vueheader></vueheader>
-        </header>
+    <div id="pageContainer">
+        <div id="app">
+            <header>
+                <vueheader></vueheader>
+            </header>
 
-        <nav>
-            <li @click="changePage('HOME');">home</li>
-            <li @click="changePage('TSHIRT')">t-shirts</li>
-            <li @click="changePage('PANTS')">pants</li>
-            <li @click="changePage('UNDERWEAR')">underwear</li>
-            <li @click="changePage('CART')" v-if="cart.length">cart</li>
-        </nav>
+            <nav>
+                <li @click="changePage('HOME');">home</li>
+                <li @click="changePage('TSHIRT')">t-shirts</li>
+                <li @click="changePage('PANTS')">pants</li>
+                <li @click="changePage('UNDERWEAR')">underwear</li>
+                <li @click="cartCount > 0 ? changePage('CART') : ''">cart ({{cartCount}})</li>
+            </nav>
 
-        <main id="main" v-if="isLoaded">
-            <div v-if="currentPage === 'HOME'">
-                <!-- Show three selected items -->
-                <deals></deals>
-
-                <div v-if="isProductSelected">
-                    <popped-product></popped-product>
+            <main id="main" v-if="isLoaded">
+                
+                <div v-if="currentPage === 'ADMIN'">
+                   <admin></admin>
                 </div>
 
-                <article>
-                    <about></about>
-                </article>
-            </div>
 
-            <div v-else-if="currentPage === 'CART'">
-                <cartvue></cartvue>
-                <payment v-if="showPayment"></payment>
-            </div>
-            
+                <div v-else-if="currentPage === 'HOME'">
+                    <!-- Show three selected items -->
+                    <deals></deals>
 
-            <div v-else :key="currentPage">
-                <category-products></category-products>
+                    <div v-if="isProductSelected">
+                        <popped-product></popped-product>
+                    </div>
 
-                <div v-if="isProductSelected">
-                    <popped-product></popped-product>
+                    <article>
+                        <about></about>
+                    </article>
                 </div>
-            </div>
 
-          
+                <div v-else-if="currentPage === 'CART'">
+                    <cartvue></cartvue>
+                    <payment v-if="showPayment"></payment>
+                    <purchase-done v-if="isPaymentComplete"></purchase-done>
+                </div>
 
-        </main>
-        <aside>
-            <!-- Put cart here? -->
-        </aside>
-        <footer>
-            <h2>Footer stuff</h2>
-        </footer>
 
+                <div v-else :key="currentPage">
+                    <category-products></category-products>
+
+                    <div v-if="isProductSelected">
+                        <popped-product></popped-product>
+                    </div>
+                </div>
+
+
+
+            </main>
+
+            <footer>
+                <p @click="changePage('ADMIN')"><strong>Admin-page</strong></p>
+                <div class="footerInfo">
+                    <h3><strong>Contact</strong></h3>
+                    <p><strong>email:</strong> peter.wallenas@edu.newton.se</p>
+                    <p><strong>phone:</strong> +46 70-123 4567</p>
+                </div>
+            </footer>
+        </div>
     </div>
+    <script src="vuescript.js"></script>
     <script src="script.js"></script>
 </body>
 

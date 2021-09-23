@@ -1,41 +1,81 @@
 [
   {
-    "ID": "ba58d138-964d-4519-a452-55eb8c34101a",
+    "ID": "29c4fee2-162e-445c-91b2-96c2278b15a0",
     "Category": "TSHIRT",
     "Title": "IT IS WHAT IT IS",
     "Price": 299.9,
     "Description": "Our plain white t-shirt is made from 100% organically grown cotton produced from our Stockholm terrarium. This loose fit t-shirt feels like heaven to wear, and its message is simple but clear -To accept and enjoy the present.",
     "Img": "https://cdn.shopify.com/s/files/1/0049/3984/1625/products/unisex-organic-cotton-t-shirt-white-front-60d7624b8b8f9_2048x2048.jpg?v=1624728143",
-    "ShowOnFirstPage": true,
+    "ShowOnFirstPage": false,
     "InStock": 4
   },
   {
-    "ID": "1bcb6810-b8a4-4a8f-8e02-9f8c4d496358",
+    "ID": "daff15dc-dd60-4c6c-8637-2454fa6b1d67",
+    "Category": "TSHIRT",
+    "Title": "Mens Casual Premium Slim Fit T-Shirt",
+    "Price": 199.9,
+    "Description": "Slim-fitting style, contrast raglan long sleeve, three-button henley placket, light weight \u0026 soft fabric for breathable and comfortable wearing. And Solid stitched shirts with round neck made for durability and a great fit for casual fashion wear and diehard baseball fans. The Henley style round neckline includes a three-button placket.",
+    "Img": "https://fakestoreapi.com/img/71-3HjGNDUL._AC_SY879._SX._UX._SY._UY_.jpg",
+    "ShowOnFirstPage": true,
+    "InStock": 10
+  },
+  {
+    "ID": "7e65930b-aa8d-4e23-91fa-9d65cc6f4589",
+    "Category": "TSHIRT",
+    "Title": "PLAIN BLACK TEE",
+    "Price": 99.9,
+    "Description": "It\u0027s a basic shirt for basic people (like our owner) - now in black! What else do you need?",
+    "Img": "https://store.sabaton.net/wp-content/uploads/2019/12/the-red-broden-black-tshirt-back-sabaton-T19050.png",
+    "ShowOnFirstPage": false,
+    "InStock": 10
+  },
+  {
+    "ID": "4fcb67e8-550e-4bcc-be44-144cd5d6fc22",
+    "Category": "TSHIRT",
+    "Title": "Heather Gray Crew Neck T-Shirt",
+    "Price": 99.9,
+    "Description": "It\u0027s a basic shirt for basic people (like our owner)! What else do you need?",
+    "Img": "https://cdn.shopify.com/s/files/1/0220/4008/4552/products/6410_HEATHERGRAY-427348_2048x2048.jpg?v=1595270745",
+    "ShowOnFirstPage": true,
+    "InStock": 10
+  },
+  {
+    "ID": "d7bd5931-77d1-4e7a-b9cc-5190289c1d60",
     "Category": "TSHIRT",
     "Title": "PLAIN WHITE TEE",
     "Price": 99.9,
     "Description": "It\u0027s a basic shirt for basic people (like our owner)! What else do you need?",
     "Img": "https://media.vogue.co.uk/photos/5e9837a95cb7540008ab975f/master/w_2580%2Cc_limit/White%2520T%2520Cos%2520Sarah%2520.jpg",
+    "ShowOnFirstPage": false,
+    "InStock": 10
+  },
+  {
+    "ID": "551507a2-c875-4649-b70c-b97850b25351",
+    "Category": "TSHIRT",
+    "Title": "Fjallraven ABISKO TRAIL T-SHIRT",
+    "Price": 299.9,
+    "Description": "The practical and easily cared for garment is suitable for trekking and travelling in warm climates, where the wool transports moisture away from the body and resists bad odours, while the tencel makes the garment drape well and feels comfortable against the skin. The Abisko Trail T-Shirt Print by FJALLRAVEN convinces with its round neck, attractive raglan sleeves and the slightly longer back.On the front of the Abisko Trail T - Shirt Print by FJALLRAVEN for men there is a FJALLRAVEN logo print and the narrow, flatlock seams minimise the risk of chafing.",
+    "Img": "https://exxpozed-image.de/exxpozed-res.cloudinary.com/image/upload/q_auto:eco,w_1500,h_1500,c_pad,b_white,d_ph.gif,e_sharpen/v20190320100519/catalog/fjaellraeven-m-abisko-trail-tshirt-print-lettering-17a-fjl-81894-glacier-green-1.jpg",
     "ShowOnFirstPage": true,
     "InStock": 10
   },
   {
-    "ID": "2e1c7203-8960-4f68-b726-3ef613d8f0ff",
+    "ID": "787d52d3-bfdb-47c4-b05a-d991607aae32",
     "Category": "UNDERWEAR",
-    "Title": "Kalsong",
+    "Title": "BOXERS",
     "Price": 59.5,
-    "Description": "Fina kalsonger",
+    "Description": "They keep the junk in the trunk and is super comfortable!",
     "Img": "https://www.icaniwill.se/bilder/artiklar/zoom/10141-001_1.jpg?m=1580482739",
-    "ShowOnFirstPage": true,
+    "ShowOnFirstPage": false,
     "InStock": 2
   },
   {
-    "ID": "bfdd5093-360e-45ed-9a6e-a9d381997446",
+    "ID": "4e4a9b48-7afb-449b-b468-39adff820367",
     "Category": "PANTS",
     "Title": "THE WORKING MAN JEANS",
     "Price": 499.9,
-    "Description": "Are you looking for the perfect pair of jeans? Suitable for both work and recreational activites? Look no further!",
-    "Img": "",
+    "Description": "Are you looking for the perfect pair of jeans? Suitable for both work and recreational activites? Look no further! This pair of Lee jeans will suit your every need.",
+    "Img": "https://i.ebayimg.com/images/g/EswAAOSwUpxcyjPY/s-l1600.jpg",
     "ShowOnFirstPage": false,
     "InStock": 15
   }
