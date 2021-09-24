@@ -29,7 +29,7 @@ window.onclick = function (event) {
 }
 
 async function fetchProducts() {
-    await axios.get('/products.json')
+    await axios.get('/products/products.json')
         .then(response => {
             // original data to keep track of the cart
             app.products = response.data;
