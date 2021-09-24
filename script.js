@@ -29,7 +29,8 @@ window.onclick = function (event) {
 }
 
 async function fetchProducts() {
-    await axios.get('/products/products.json')
+    // await axios.get('/products/products.json') //when running locally
+    await axios.get('/Webshop/products/products.json') // when running github pages
         .then(response => {
             // original data to keep track of the cart
             app.products = response.data;
