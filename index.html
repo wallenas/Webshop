@@ -37,13 +37,12 @@
 
 
                 <div v-else-if="currentPage === 'HOME'">
-                    <!-- Show three selected items -->
                     <deals></deals>
 
                     <div v-if="isProductSelected">
                         <popped-product></popped-product>
                     </div>
-
+                    <hr>
                     <article>
                         <about></about>
                     </article>
@@ -63,9 +62,6 @@
                         <popped-product></popped-product>
                     </div>
                 </div>
-
-
-
             </main>
 
             <footer>

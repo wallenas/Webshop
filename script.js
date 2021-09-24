@@ -84,26 +84,23 @@ Vue.component('about', {
         return {
             title: "about us",
             subheader: ".quality | .simplicity | .sustainability",
-            description: "We care about you. You need to look your best. Bla bla bla lorem ipsum yeah" +
-                "Lorem ipsum dolor sit amet consectetur adipisicing elit. Maxime mollitia, molestiae quas vel sint commodi repudiandae consequuntur voluptatum laborum" +
-                "numquam blanditiis harum quisquam eius sed odit fugiat iusto fuga praesentium" +
-                "optio, eaque rerum! Provident similique accusantium nemo autem.Veritatis" +
-                "obcaecati tenetur iure eius earum ut molestias architecto voluptate aliquam" +
-                "nihil, eveniet aliquid culpa officia aut! Impedit sit sunt quaerat, odit," +
-                "tenetur error, harum nesciunt ipsum debitis quas aliquid.Reprehenderit, " +
-                "quia.Quo neque error repudiandae fuga? Ipsa laudantium molestias eos " +
-                "sapiente officiis modi at sunt excepturi expedita sint? Sed quibusdam" +
-                "recusandae alias error harum maxime adipisci amet laborum.Perspiciatis " +
-                "minima nesciunt dolorem! Officiis iure rerum voluptates a cumque velit " +
-                "quibusdam sed amet tempora."
+            description: ""
         }
     },
     // TODO: Gör stil av detta
-    template: '<div class="about">' +
-        '<h2>{{title}}</h2>' +
-        '<h3 class="thin">{{subheader}}</h3>' +
-        '<p>{{description}}</p>' +
-        '</div>'
+    template: `<div class="about">
+        <h1>{{title}}</h1>
+        <h3><strong>{{subheader}}</strong></h3>
+        <p>We care about you. You need to both look your best and feel your best, but without hurting your wallet or the environment. <br><br>
+            <strong>wallenas clothing company</strong> takes care of all those needs, where our focus is on: 
+        </p>
+        <ul>
+            <li>Only adding products that were produced with quality and sustainability in mind</li>
+            <li>Keeping the price reasonable for everyone</li>
+            <li>"Less is more" approach to design</li>
+        <ul>
+            <p>We hope you find our products to your liking. Our site is still under development, so if you come across any bugs - please contact us (see information below).</p>
+        </div>`
 })
 
 Vue.component('deals', {
@@ -149,7 +146,6 @@ Vue.component('deals', {
 </div>`
 })
 
-// TODO: Gör en snygg stil av detta
 Vue.component('popped-product', {
     data: function () {
         return {
@@ -286,7 +282,7 @@ Vue.component('cartvue', {
                                 <div style="width: 200px; margin-left: 10px;">
                                     <h3 style="text-align: left;">{{p.product.Title}}</h3>
                                     <p style="text-align: left; font-size: 14px;">{{p.product.Category.toLowerCase()}}</p>
-                                    <button @click="app.removeFromCart(p)" style="float: left;" v-if="!app.showPayment">Remove</button>
+                                    <button @click="app.removeFromCart(p)" style="float: left; background-color: orangered;" v-if="!app.showPayment">Remove</button>
                                 </div>
                             </div>
                             <div class="quantityContainer">
@@ -433,7 +429,7 @@ Vue.component('payment', {
                                     <input id="swish" type="radio" v-on:change="changePaymentOption()" name="paymentOption" value="swish" checked ref="payment_swish">
                                 </div>
                                 <div class="flex-row">
-                                    <label for="bank">Bank</label>
+                                    <label for="bank">Card</label>
                                     <input id="bank" type="radio" v-on:change="changePaymentOption()" value="bank" name="paymentOption" ref="payment_bank">
                                 </div>
                             </div>
@@ -544,13 +540,18 @@ Vue.component('admin', {
                 InStock: this.inStock
             });
 
+
+            app.products = JSON.parse(JSON.stringify(productsClone));
             alert("Product added!");
         },
-        removeProduct: function(productId){
-            let indexOfObj = productsClone.indexOf(p => p.ID == productId);
+        removeProduct: function(){
+            let indexOfObj = productsClone.indexOf(p => p.ID == this.productId);
 
             if(indexOfObj != null){
                 productsClone.splice(indexOfObj, 1);
+                console.log("produkt togs bort")
+                alert("Produkt removed!");
+                this.clearValues();
             }
 
             else{
@@ -575,8 +576,9 @@ Vue.component('admin', {
             this.img = productToEdit.Img;
             this.showOnFirstPage = productToEdit.ShowOnFirstPage;
             this.inStock = productToEdit.InStock;
+            app.showEditOptions = true;
         },
-        editProduct: function(){
+        saveProduct: function(){
             let product = getCloneProduct(this.productId);
             if (product == null){
                 console.log("Kunde inte hitta produkten som skulle redigeras.")
@@ -591,6 +593,7 @@ Vue.component('admin', {
             product.ShowOnFirstPage = this.showOnFirstPage;
             product.InStock = this.inStock;
 
+            alert("Produkt: " + product.Title + " sparades!")
             this.clearValues();
         },
         clearValues: function() {
@@ -602,22 +605,23 @@ Vue.component('admin', {
             this.showOnFirstPage = false;
             this.inStock = 0;
             this.productId = "";
+            app.showEditOptions = false;
         }
     },
 
     template: `<div class="admin">
                     <h2>admin</h2>
-                    <div class="adminHeaders flex-row">
+                    <div class="adminHeaders flex-row larger">
                     <li @click="app.addProductPage = true">add product</li>
                     <li @click="app.addProductPage = false">edit product</li>
                     </div>
-                    <div class="addProduct" v-if="app.addProductPage">
+                    <div class="editOrAddProduct" v-if="app.addProductPage">
                         <h1>Add product</h1>
                         <form id="adminForm">
                                 <div class="details">
                                     <label for="category">Category:</label>
                                     <select id="category" v-model="category">
-                                        <option value="">-Select Category</option>
+                                        <option value="">-Select Category-</option>
                                         <option value="TSHIRT">T-shirt</option>
                                         <option value="UNDERWEAR">Underwear</option>
                                         <option value="TSHIRT">Pants</option>
@@ -634,59 +638,64 @@ Vue.component('admin', {
 
                                     <label for="imgUrl">ImgUrl:</label>
                                     <input id="imgUrl" type="text" class="inputs" name="img" v-model="img">
-                                    <div class="flex-row">
+                                    <div class="showFirstPage">
                                         <label for="showOnFirstPage">Show on first page:</label>
                                         <input id="showOnFirstPage" type="checkbox" class="inputs" name="showOnFirstPage" v-model="showOnFirstPage">
                                     </div>
                                     <label for="inStock">In stock:</label>
-                                    <input id="inStock" type="number" class="inputs" min="1" name="inStock" v-model="inStock">                               
+                                    <input id="inStock" style="width: 60px;" type="number" class="inputs" min="1" max="100" name="inStock" v-model="inStock">                               
                                 </div>
                                 </form>
                                 <button @click="addProduct">Add product</button>
                     </div>
 
-                    <div class="editProduct" v-if="!app.addProductPage">
                     
-                    <h1>Edit product</h1>
-                    <form id="adminForm">
-                            <div class="details">
-                                <label for="productPicker">Pick product:</label>
-                                
-                                <select id="productPicker" v-model="productId">
-                                    <option value="">-Select Product-</option>
-                                    <option v-for="product in productsClone" v-bind:value="product.ID">{{product.Title}}, DEAL: {{product.ShowOnFirstPage}}</option>
-                                </select>
-                                <div>
-                                <button @click="getSelectedProduct(productId)">Get product</button>
-                                </div>
-                                    <label for="category">Category:</label>
-                                    <select id="category" v-model="category">
-                                    <option value="">-Select Category</option>
-                                    <option value="TSHIRT">T-shirt</option>
-                                    <option value="UNDERWEAR">Underwear</option>
-                                    <option value="TSHIRT">Pants</option>
-                                </select>
+                    <div class="editOrAddProduct" v-if="!app.addProductPage">
+                        <h1>Edit product</h1>
+                        <form id="adminForm">
+                                <div class="details">
+                                    <label for="productPicker">Select product to edit:</label>
+                                    
+                                    <select id="productPicker" v-model="productId">
+                                        <option value="">-Select Product-</option>
+                                        <option v-for="product in productsClone" v-bind:style="product.ShowOnFirstPage ? 'background-color: lightgray;' : '' " v-bind:value="product.ID">{{product.Title}} --- FirstPage: {{product.ShowOnFirstPage}}</option>
+                                    </select>
 
-                                <label for="Title">Title:</label>
-                                <input id="title" class="inputs" type="text" name="title" ref="title" v-model="title">
 
-                                <label for="price">Price:</label>
-                                <input id="price" class="inputs" type="number" name="price" min="0.00" v-model="price">
+                                    <div>
+                                    <button id="getProductBtn" @click="getSelectedProduct(productId)">Get product</button>
+                                    </div>
+                                    <div class="details noMargin" v-if="app.showEditOptions">
+                                        <label for="category">Category:</label>
+                                        <select id="category" v-model="category">
+                                            <option value="">-Select Category-</option>
+                                            <option value="TSHIRT">T-shirt</option>
+                                            <option value="UNDERWEAR">Underwear</option>
+                                            <option value="PANTS">Pants</option>
+                                        </select>
 
-                                <label for="description">Description:</label>
-                                <textarea name="description" id="description" rows="5" v-model="description"></textarea> 
+                                        <label for="Title">Title:</label>
+                                        <input id="title" class="inputs" type="text" name="title" ref="title" v-model="title">
 
-                                <label for="imgUrl">ImgUrl:</label>
-                                <input id="imgUrl" type="text" class="inputs" name="img" v-model="img">
-                                <div class="flex-row">
-                                    <label for="showOnFirstPage">Show on first page:</label>
-                                    <input id="showOnFirstPage" type="checkbox" class="inputs" name="showOnFirstPage" v-model="showOnFirstPage">
-                                </div>
-                                <label for="inStock">In stock:</label>
-                                <input id="inStock" type="number" class="inpumts" min="1" name="inStock" v-model="inStock">                               
-                            </div>
-                            </form>
-                            <button @click="editProduct">Save changes</button>
-                    </div>
+                                        <label for="price">Price:</label>
+                                        <input id="price" class="inputs" type="number" name="price" min="0.00" v-model="price">
+
+                                        <label for="description">Description:</label>
+                                        <textarea name="description" id="description" rows="5" v-model="description"></textarea> 
+
+                                        <label for="imgUrl">ImgUrl:</label>
+                                        <input id="imgUrl" type="text" class="inputs" name="img" v-model="img">
+                                        <div class="showFirstPage">
+                                            <label for="showOnFirstPage">Show on first page:</label>
+                                            <input id="showOnFirstPage" type="checkbox" class="inputs" name="showOnFirstPage" v-model="showOnFirstPage">
+                                        </div>
+                                        <label for="inStock">In stock:</label>
+                                        <input id="inStock" style="width: 60px;" type="number" class="inpumts" min="1" max="100" name="inStock" v-model="inStock">    
+                                        </div>                           
+                                        </div>
+                                        </form>
+                                        <button v-if="app.showEditOptions" @click="saveProduct()">Save changes</button>
+                                        <button v-if="app.showEditOptions" style="background-color: orangered;" @click="removeProduct()">Remove product</button>
+                                        </div>
                 </div>`
 });

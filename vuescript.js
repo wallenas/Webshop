@@ -15,7 +15,8 @@ var app = new Vue({
         showPayment: false,
         orderTotal: 0,
         isPaymentComplete: false,
-        addProductPage: true
+        addProductPage: true,
+        showEditOptions: false,
 
     },
     methods: {

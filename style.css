@@ -32,7 +32,6 @@ footer {
     height: 100px;
     width: 100%;
     bottom: 0px;
-    
     display: grid;
     grid-template-columns: auto auto;
 }
@@ -196,8 +195,20 @@ main {
 }
 
 .about {
-    text-align: center;
-    margin-top: 50px;
+    margin: 50px 0x;
+}
+
+.about h1, h3 {
+    text-align:center;
+    margin: 10px
+}
+
+.about p {
+    margin-top:30px;
+}
+
+.about li {
+    margin: 10px 40px;
 }
 
 
@@ -306,6 +317,14 @@ main {
     padding-right: 10px;
     
 }
+.productInfo h2 {
+    margin-left: 0;
+}
+
+.productInfo p, button {
+    margin-left: 14px;
+}
+
 .cartImgContainer {
     border: 2px solid black;
     overflow: hidden;
@@ -408,6 +427,10 @@ hr {
     
 }
 
+.noMargin {
+    margin-left: 0px;
+}
+
 .submitContainer {
     display: flex;
     justify-content: center;
@@ -415,10 +438,15 @@ hr {
 }
 
 .details input, select {
-    width: 50%;
+    width: 25%;
     padding: 2px;
     border-radius: 5px;
     font-size: 16px;
+}
+
+#getProductBtn {
+
+    margin-left: 0px;
 }
 
 .radios {
@@ -437,7 +465,25 @@ hr {
     margin: auto 10px;
 }
 
+.showFirstPage {
+    display: flex;
+    margin: 10px 0px;
+    width: 20%;
+    padding: 5px 0px;
+}
 
+.showFirstPage input {
+    margin: auto;
+    margin-right: 100px;
+    height: 20px;
+    padding: 5px;
+}
+
+textarea {
+    width: 25%;
+    border-radius: 5px;
+    border: 2px solid black;
+}
 
 .radios > * {
     padding: 0 2px;
@@ -471,5 +517,19 @@ hr {
     font-size: 24px;
 }
 
+.editOrAddProduct {
+    margin: 0 10px;
+    padding: 5px;
+}
 
-  
+.editOrAddProduct h1 {
+    text-align: center;
+}
+
+.editOrAddProduct button {
+    margin: 5px 20px;
+}
+
+.larger {
+    font-size: larger;
+}
